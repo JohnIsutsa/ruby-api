@@ -23,7 +23,20 @@ class Api::V1::ProductsController < ApplicationController
   def show
     product = Product.find_by(id: params[:id])
     if product
-      render json: product, status: 200
+      render json: { status: "success", data: product }, status: 200
+    else
+      render json: { error: "Product not found" }, status: 404
+    end
+  end
+
+  def update
+    product = Product.find_by(id: params[:id])
+    if product
+      if product.update(prod_params)
+        render json: product, status: 200
+      else
+        render json: { errors: product.errors.full_messages }, status: 422
+      end
     else
       render json: { error: "Product not found" }, status: 404
     end
